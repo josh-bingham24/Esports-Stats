@@ -1,0 +1,32 @@
+@page "/titles/{TitleId}"
+@inject HttpClient Http
+
+@if (currentTitle == null)
+{
+    <MudStack AlignItems="AlignItems.Center">
+        <MudProgressCircular Indeterminate="true" Color="Color.Dark" />
+    </MudStack>
+    return;
+}
+
+<PageTitle></PageTitle>
+
+<MudPaper>
+    @currentTitle.Name
+</MudPaper>
+
+
+@code {
+    [Parameter]
+    public string? TitleId { get; set; }
+    private Title? currentTitle;
+
+
+    protected override async void OnParametersSet()
+    {
+        currentTitle = await Http.GetFromJsonAsync<Title>(
+        $"http://localhost:8000/get_title?id={TitleId}"
+        );
+        StateHasChanged();
+    }
+}

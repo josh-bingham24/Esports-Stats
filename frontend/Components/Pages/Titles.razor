@@ -1,17 +1,23 @@
-@page "/titles/{TitleId}"
-@inject HttpClient Http
+@page "/"
 
+<MudStack Class="mb-10" Row="true" Justify="Justify.Center">
+    <MudText Typo="Typo.h2">Titles</MudText>
+</MudStack>
 
-@code {
-    [Parameter]
-    public string? TitleId { get; set; }
-    private Title? currentTitle;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        currentTitle = await Http.GetFromJsonAsync<Title>(
-        $"http://localhost:8000/get_title?id={TitleId}"
-        );
-    }
-}
+<MudStack Row="true" Spacing="16" Justify="Justify.Center" Wrap="Wrap.Wrap">
+    <MudCard Elevation="3" Style="width: 220px; height: 300px; overflow: hidden">
+        <MudLink Href="/titles/2" Underline="Underline.None" Style="width: 100%; height: 100%;">
+            <MudCardMedia Image="images/DOTA2_Title.jpg" />
+        </MudLink>
+    </MudCard>
+    <MudCard Elevation="3" Style="width: 220px; height: 300px; overflow: hidden">
+        <MudLink Href="/titles/28" Underline="Underline.None" Style="width: 100%; height: 100%;">
+            <MudCardMedia Image="images/CS2_Title.jpg" />
+        </MudLink>
+    </MudCard>
+    <MudCard Elevation="3" Style="width: 220px; height: 300px; overflow: hidden">
+        <MudLink Href="/titles/25" Underline="Underline.None" Style="width: 100%; height: 100%;">
+            <MudCardMedia Image="images/Rainbow6_Title.jpg" />
+        </MudLink>
+    </MudCard>
+</MudStack>
