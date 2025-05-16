@@ -92,21 +92,21 @@
     protected async override Task OnInitializedAsync()
     {
         titles = await Http.GetFromJsonAsync<List<Title>>(
-        "http://localhost:8000/get_titles"
+        "http://localhost:8000/central_data_feed/get_titles"
         ) ?? new();
     }
 
     private async Task GetOrgs()
     {
         orgs = await Http.GetFromJsonAsync<List<Organization>>(
-        $"http://localhost:8000/get_orgs?search=\"{orgSearch}\""
+        $"http://localhost:8000/central_data_feed/get_orgs?search=\"{orgSearch}\""
         ) ?? new();
     }
 
     private async Task GetTeams()
     {
         var teams = await Http.GetFromJsonAsync<List<Team>>(
-        $"http://localhost:8000/get_team?titleId={selectedTitle?.Id}&orgId={selectedOrg?.Id}"
+        $"http://localhost:8000/central_data_feed/get_team?titleId={selectedTitle?.Id}&orgId={selectedOrg?.Id}"
         ) ?? new();
         team = teams.Count > 0 ? teams[0] : null;
     }

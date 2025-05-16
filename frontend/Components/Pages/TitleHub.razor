@@ -25,7 +25,7 @@
     protected override async void OnParametersSet()
     {
         currentTitle = await Http.GetFromJsonAsync<Title>(
-        $"http://localhost:8000/get_title?id={TitleId}"
+        $"http://localhost:8000/central_data_feed/get_title?id={TitleId}"
         );
         StateHasChanged();
     }
