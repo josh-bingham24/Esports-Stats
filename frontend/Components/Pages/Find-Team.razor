@@ -1,0 +1,116 @@
+@page "/find-team"
+@inject HttpClient Http
+
+@using System.Reflection;
+
+
+<MudStack Justify="Justify.Center">
+    <MudCard>
+        <MudCardContent>
+            <MudStack Spacing="10">
+                <MudStack Spacing="4" StretchItems="StretchItems.All">
+                    @if (titles != null)
+                    {
+                        <MudSelect @bind-Value="selectedTitle" Label="Title" FullWidth="true">
+                            @foreach (var title in titles)
+                            {
+                                <MudSelectItem Value="@title">@title.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+                    <MudTextField @bind-Value="orgSearch" Label="Organization"
+                        Placeholder="@($"Search for {selectedTitle?.NameShortened ?? ""} org")"
+                        Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                        OnAdornmentClick="GetOrgs" Disabled="@(selectedTitle == null)" FullWidth="true" />
+                </MudStack>
+
+                <MudDivider />
+
+                <MudStack Row="true" Justify="Justify.Center">
+                    @if (orgs != null)
+                    {
+                        <MudToggleGroup T="Organization" SelectionMode="SelectionMode.SingleSelection"
+                            @bind-Value="selectedOrg">
+                            @foreach (Organization org in orgs)
+                            {
+                                <MudToggleItem Value="@org" Text="@org.Name" />
+                            }
+                        </MudToggleGroup>
+                    }
+                </MudStack>
+                <MudStack Row="true" Justify="Justify.FlexEnd">
+                    @if (selectedOrg != null)
+                    {
+                        <MudButton OnClick="GetTeams" Color="Color.Primary">Get Team</MudButton>
+                    }
+                </MudStack>
+            </MudStack>
+            <MudStack Row="true" Spacing="4" StretchItems="StretchItems.All">
+                <MudPaper Class="pa-16 ma-2" Elevation="3">
+                    <MudText Typo="Typo.h3">Title</MudText>
+                    @if (selectedTitle != null)
+                    {
+                        @foreach (PropertyInfo prop in selectedTitle.GetType().GetProperties())
+                        {
+                            <MudText Typo="Typo.h6">@prop.Name</MudText>
+                            <MudText Typo="Typo.body1">@prop.GetValue(selectedTitle)</MudText>
+                        }
+                    }
+                </MudPaper>
+                <MudPaper Class="pa-16 ma-2" Elevation="3">
+                    <MudText Typo="Typo.h3">Organization</MudText>
+                    @if (selectedOrg != null)
+                    {
+                        @foreach (PropertyInfo prop in selectedOrg.GetType().GetProperties())
+                        {
+                            <MudText Typo="Typo.h6">@prop.Name</MudText>
+                            <MudText Typo="Typo.body1">@prop.GetValue(selectedOrg)</MudText>
+                        }
+                    }
+                </MudPaper>
+                <MudPaper Class="pa-16 ma-2" Elevation="3">
+                    <MudText Typo="Typo.h3">Team</MudText>
+                    @if (team != null)
+                    {
+                        @foreach (PropertyInfo prop in team.GetType().GetProperties())
+                        {
+                            <MudText Typo="Typo.h6">@prop.Name</MudText>
+                            <MudText Typo="Typo.body1">@prop.GetValue(team)</MudText>
+                        }
+                    }
+                </MudPaper>
+            </MudStack>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+
+@code {
+    private List<Title>? titles;
+    private Team? team;
+    private List<Organization>? orgs;
+    private Title? selectedTitle;
+    private Organization? selectedOrg;
+    private string orgSearch = "";
+
+    protected async override Task OnInitializedAsync()
+    {
+        titles = await Http.GetFromJsonAsync<List<Title>>(
+        "http://localhost:8000/get_titles"
+        ) ?? new();
+    }
+
+    private async Task GetOrgs()
+    {
+        orgs = await Http.GetFromJsonAsync<List<Organization>>(
+        $"http://localhost:8000/get_orgs?search=\"{orgSearch}\""
+        ) ?? new();
+    }
+
+    private async Task GetTeams()
+    {
+        var teams = await Http.GetFromJsonAsync<List<Team>>(
+        $"http://localhost:8000/get_team?titleId={selectedTitle?.Id}&orgId={selectedOrg?.Id}"
+        ) ?? new();
+        team = teams.Count > 0 ? teams[0] : null;
+    }
+}

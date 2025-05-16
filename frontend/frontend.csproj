@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Mudblazor" Version="8.6.0" />
+  </ItemGroup>
+
 </Project>

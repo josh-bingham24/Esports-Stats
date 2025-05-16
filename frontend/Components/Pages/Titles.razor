@@ -1,0 +1,17 @@
+@page "/titles/{TitleId}"
+@inject HttpClient Http
+
+
+@code {
+    [Parameter]
+    public string? TitleId { get; set; }
+    private Title? currentTitle;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentTitle = await Http.GetFromJsonAsync<Title>(
+        $"http://localhost:8000/get_title?id={TitleId}"
+        );
+    }
+}
