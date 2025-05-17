@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-public class Title
+public class SeriesFormat
 {
     [JsonPropertyName("id")]
     public required string Id { get; set; }
@@ -8,6 +8,4 @@ public class Title
     public string? Name { get; set; }
     [JsonPropertyName("nameShortened")]
     public string? NameShortened { get; set; }
-    [JsonPropertyName("private")]
-    public bool? Private { get; set; }
 }
