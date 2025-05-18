@@ -1,0 +1,209 @@
+query AllSeries($after: Cursor, $before: Cursor, $first: Int, $last: Int) {
+  allSeries(after: $after, before: $before, first: $first, last: $last) {
+    edges {
+      cursor
+      node {
+        id
+        externalLinks {
+          dataProvider {
+            description
+            name
+          }
+          externalEntity {
+            id
+          }
+        }
+        format {
+          id
+          name
+          nameShortened
+        }
+        players {
+          id
+          age
+          externalLinks {
+            dataProvider {
+              description
+              name
+            }
+            externalEntity {
+              id
+            }
+          }
+          fullName
+          nationality {
+            code
+            name
+          }
+          nickname
+          private
+          roles {
+            id
+            name
+            private
+            title {
+              id
+              name
+              nameShortened
+              private
+            }
+          }
+          team {
+            id
+            colorPrimary
+            colorSecondary
+            externalLinks {
+              dataProvider {
+                description
+                name
+              }
+              externalEntity {
+                id
+              }
+            }
+            logoUrl
+            name
+            nameShortened
+            organization {
+              id
+              name
+            }
+            private
+            title {
+              id
+              name
+              nameShortened
+              private
+            }
+          }
+          title {
+            id
+            name
+            nameShortened
+            private
+          }
+        }
+        private
+        productServiceLevels {
+          productName
+          serviceLevel
+        }
+        startTimeScheduled
+        streams {
+          url
+        }
+        teams {
+          baseInfo {
+            id
+            colorPrimary
+            colorSecondary
+            externalLinks {
+              dataProvider {
+                description
+                name
+              }
+              externalEntity {
+                id
+              }
+            }
+            logoUrl
+            name
+            nameShortened
+            organization {
+              id
+              name
+            }
+            private
+            title {
+              id
+              name
+              nameShortened
+              private
+            }
+          }
+          scoreAdvantage
+        }
+        title {
+          id
+          name
+          nameShortened
+          private
+        }
+        tournament {
+          id
+          children {
+            id
+            name
+            nameShortened
+          }
+          endDate
+          externalLinks {
+            dataProvider {
+              description
+              name
+            }
+            externalEntity {
+              id
+            }
+          }
+          logoUrl
+          name
+          nameShortened
+          parent {
+            id
+            name
+            nameShortened
+          }
+          private
+          prizePool {
+            amount
+          }
+          startDate
+          teams {
+            id
+            colorPrimary
+            colorSecondary
+            externalLinks {
+              dataProvider {
+                description
+                name
+              }
+              externalEntity {
+                id
+              }
+            }
+            logoUrl
+            name
+            nameShortened
+            organization {
+              id
+              name
+            }
+            private
+            title {
+              id
+              name
+              nameShortened
+              private
+            }
+          }
+          titles {
+            id
+            name
+            nameShortened
+            private
+          }
+          venueType
+        }
+        type
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}

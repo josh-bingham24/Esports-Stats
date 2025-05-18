@@ -1,6 +1,8 @@
 from decouple import config
+from typing import Optional
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from ..queries import load_query
 import requests
 
 
@@ -10,21 +12,46 @@ router = APIRouter(
 
 
 api_key = config('x-api-key')
+enpoint_url = "https://api-op.grid.gg/central-data/graphql"
 
 
-def send_request(url, query) -> requests.Response:
+def send_request(query, variables) -> requests.Response:
     headers = {
         "Content-Type": "application/json",
         "x-api-key": api_key
     }
 
     response = requests.post(
-        url=url,
-        json={"query": query},
+        url=enpoint_url,
+        json={"query": query, "variables": variables},
         headers=headers
-    )
+    )   
     
     return response
+
+@router.get("/all_series")
+async def all_series(
+    after: Optional[str] = None,
+    before: Optional[str] = None,
+    first: int = 50,
+    last: Optional[int] = None
+):  
+    query = load_query("central_data_queries", "all_series")
+    
+    variables = {
+        "after": after,
+        "before": before,
+        "first": first,
+        "last": last
+    }
+    
+    response = send_request(query, variables)
+    
+    if response.status_code == 200:
+        json: dict = response.json()
+        return json
+    else:
+        return {"error": response.text, "status_code": response.status_code}
 
 
 @router.get("/get_title")
@@ -39,14 +66,14 @@ async def get_title(id: str):
         }}
     """
     
-    response = send_request("https://api-op.grid.gg/central-data/graphql", query)
+    response = send_request(query)
     
     if response.status_code == 200:
-        response = response.json()
-        title = response.get("data", {}).get("title", [])
+        json = response.json()
+        title = json.get("data").get("title")
         return title
     else:
-        return {"error": response.text, "status_code": response.status_code}
+        return {"error": json.text, "status_code": json.status_code}
 
 
 @router.get("/get_titles")
@@ -61,14 +88,14 @@ async def get_titles():
     }
     """
     
-    response = send_request("https://api-op.grid.gg/central-data/graphql", query)
+    response = send_request(query)
     
     if response.status_code == 200:
-        response = response.json()
-        titles = response.get("data", {}).get("titles", [])
+        json = response.json()
+        titles = json.get("data").get("titles")
         return titles
     else:
-        return {"error": response.text, "status_code": response.status_code}
+        return {"error": json.text, "status_code": json.status_code}
     
     
     
@@ -77,33 +104,46 @@ async def get_orgs(search: str):
     query = f"""
     query getOrginizations {{
         organizations(first: 2, filter: {{ name: {{ contains: {search} }} }}) {{
-            totalCount
             edges {{
                 node {{
                     id
                     name
+                    private
+                    teams {{
+                        colorPrimary
+                        colorSecondary
+                        id
+                        logoUrl
+                        name
+                        nameShortened
+                        titles {{
+                            id
+                            name
+                            nameShortened
+                            private
+                        }}
+                    }}
                 }}
             }}
+            pageInfo {{
+                endCursor
+                hasNextPage
+                hasPreviousPage
+                startCursor
+            }}
+            totalCount
         }}
     }}
     """
     
-    response = send_request("https://api-op.grid.gg/central-data/graphql", query)
+    response = send_request(query)
     
     if response.status_code == 200:
-        response = response.json()
-    
-        simplified_orgs = [
-            {
-                "id": edge["node"]["id"],
-                "name": edge["node"]["name"]
-            }
-            for edge in response["data"]["organizations"]["edges"]
-        ]
-        
-        return JSONResponse(content=simplified_orgs)
+        json = response.json()
+        titles = json.get("data")
+        return titles
     else:
-        return {"error": response.text, "status_code": response.status_code}
+        return {"error": json.text, "status_code": json.status_code}
     
     
 
@@ -115,22 +155,38 @@ async def get_team(titleId: str, orgId: str):
             edges {{
                 node {{
                     id
+                    colorPrimary
+                    colorSecondary
+                    externalLinks {{
+                        dataProvider {{
+                            description
+                            name
+                        }}
+                        externalEntity {{
+                            id
+                        }}
+                    }}
+                    logoUrl
+                    name
+                    nameShortened
+                    organization {{
+                        id
+                        name
+                    }}
+                    private
                     title {{
                         id
                         name
                         nameShortened
+                        private
                     }}
-                    name
-                    colorPrimary
-                    colorSecondary
-                    logoUrl
                 }}
             }}
         }}
     }}
     """
     
-    response = send_request("https://api-op.grid.gg/central-data/graphql", query)
+    response = send_request(query)
     
     if response.status_code == 200:
         response = response.json()

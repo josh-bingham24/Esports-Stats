@@ -10,8 +10,6 @@ public class Player
     public List<ExternalLink>? ExternalLinks { get; set; }
     [JsonPropertyName("fullName")]
     public string? FullName { get; set; }
-    [JsonPropertyName("imageUrl")]
-    public string? ImageUrl { get; set; }
     [JsonPropertyName("nationality")]
     public Nationality? Nationality { get; set; }
     [JsonPropertyName("nickname")]

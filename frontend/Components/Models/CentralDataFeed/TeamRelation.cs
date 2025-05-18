@@ -14,8 +14,6 @@ public class TeamRelation
     public string? Name { get; set; }
     [JsonPropertyName("nameShortened")]
     public string? NameShortened { get; set; }
-    [JsonPropertyName("rating")]
-    public float? Rating { get; set; }
     [JsonPropertyName("titles")]
     public List<Title>? Titles { get; set; }
 }

@@ -20,8 +20,6 @@ public class Team
     public OrganizationRelation? Organization { get; set; }
     [JsonPropertyName("private")]
     public bool? Private { get; set; }
-    [JsonPropertyName("rating")]
-    public float? Rating { get; set; }
     [JsonPropertyName("title")]
     public Title? Title { get; set; }
 }
