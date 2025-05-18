@@ -15,7 +15,7 @@ api_key = config('x-api-key')
 enpoint_url = "https://api-op.grid.gg/central-data/graphql"
 
 
-def send_request(query, variables) -> requests.Response:
+def send_request(query, variables=None) -> requests.Response:
     headers = {
         "Content-Type": "application/json",
         "x-api-key": api_key
@@ -48,7 +48,20 @@ async def all_series(
     response = send_request(query, variables)
     
     if response.status_code == 200:
-        json: dict = response.json()
+        json: dict = response.json().get("data").get("allSeries")
+        return json
+    else:
+        return {"error": response.text, "status_code": response.status_code}
+
+
+@router.get("/data_providers")
+async def data_providers():  
+    query = load_query("central_data_queries", "data_providers")
+    
+    response = send_request(query)
+    
+    if response.status_code == 200:
+        json: dict = response.json().get("data").get("dataProviders")
         return json
     else:
         return {"error": response.text, "status_code": response.status_code}

@@ -1,0 +1,6 @@
+query data_providers {
+  dataProviders {
+    description
+    name
+  }
+}
