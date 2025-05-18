@@ -29,6 +29,7 @@ def send_request(query, variables=None) -> requests.Response:
     
     return response
 
+
 @router.get("/all_series")
 async def all_series(
     after: Optional[str] = None,
@@ -62,6 +63,50 @@ async def data_providers():
     
     if response.status_code == 200:
         json: dict = response.json().get("data").get("dataProviders")
+        return json
+    else:
+        return {"error": response.text, "status_code": response.status_code}
+    
+    
+@router.get("/organization")
+async def organization(
+    id: str
+):  
+    query = load_query("central_data_queries", "organization")
+    
+    variables = {
+        "id": id,
+    }
+    
+    response = send_request(query, variables)
+    
+    if response.status_code == 200:
+        json: dict = response.json().get("data").get("organization")
+        return json
+    else:
+        return {"error": response.text, "status_code": response.status_code}
+    
+    
+@router.get("/organizations")
+async def organizations(
+    after: Optional[str] = None,
+    before: Optional[str] = None,
+    first: int = 50,
+    last: Optional[int] = None
+):  
+    query = load_query("central_data_queries", "organizations")
+    
+    variables = {
+        "after": after,
+        "before": before,
+        "first": first,
+        "last": last
+    }
+    
+    response = send_request(query, variables)
+    
+    if response.status_code == 200:
+        json: dict = response.json().get("data").get("organizations")
         return json
     else:
         return {"error": response.text, "status_code": response.status_code}

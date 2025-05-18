@@ -1,0 +1,33 @@
+query organization($after: Cursor, $before: Cursor, $first: Int, $last: Int) {
+  organizations(after: $after, before: $before, first: $first, last: $last) {
+    edges {
+      cursor
+      node {
+        id
+        name
+        private
+        teams {
+          colorPrimary
+          colorSecondary
+          id
+          logoUrl
+          name
+          nameShortened
+          titles {
+            id
+            name
+            nameShortened
+            private
+          }
+        }
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}

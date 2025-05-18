@@ -1,0 +1,21 @@
+query organization($id: ID!) {
+  organization(id: $id) {
+    id
+    name
+    private
+    teams {
+      colorPrimary
+      colorSecondary
+      id
+      logoUrl
+      name
+      nameShortened
+      titles {
+        id
+        name
+        nameShortened
+        private
+      }
+    }
+  }
+}
